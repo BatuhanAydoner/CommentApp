@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
   {
@@ -18,6 +18,7 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
+      required: [true, "Password is required."],
       minLength: [6, "Password has to be bigger and equal than 6 characters"],
     },
     nickname: {
@@ -42,6 +43,11 @@ const UserSchema = new Schema(
             required: [true, "Comment id is required."],
             ref: "Comments",
           },
+          post_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true, "Post id is required."],
+            ref: "Posts",
+          },
         },
       ],
     },
@@ -55,10 +61,6 @@ const UserSchema = new Schema(
           },
         },
       ],
-    },
-    created_at: {
-      type: Date,
-      required: true,
     },
   },
   { collection: "Users", timestamps: true }
