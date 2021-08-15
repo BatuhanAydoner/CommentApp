@@ -10,11 +10,9 @@ const PostShcema = new Schema(
     comments: {
       type: [
         {
-          comment_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: [true, "Comment id is required."],
-            ref: "Comments",
-          },
+          type: mongoose.Schema.Types.ObjectId,
+          required: [true, "Comment id is required."],
+          ref: "Comments",
         },
       ],
     },

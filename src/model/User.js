@@ -11,6 +11,10 @@ const UserSchema = new Schema(
       type: String,
       required: [true, "Lastname is required."],
     },
+    full_name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       unique: true,
@@ -31,23 +35,14 @@ const UserSchema = new Schema(
       default: "",
     },
     posts: {
-      type: [
-        { post_id: { type: mongoose.Schema.Types.ObjectId, ref: "Posts" } },
-      ],
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Posts" }],
     },
     comments: {
       type: [
         {
-          comment_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: [true, "Comment id is required."],
-            ref: "Comments",
-          },
-          post_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: [true, "Post id is required."],
-            ref: "Posts",
-          },
+          type: mongoose.Schema.Types.ObjectId,
+          required: [true, "Comment id is required."],
+          ref: "Comments",
         },
       ],
     },
