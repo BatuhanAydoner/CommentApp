@@ -12,4 +12,10 @@ router.post(
   commentController.createComment
 );
 
+router.post(
+  "/like-comment",
+  [body("/id").trim().notEmpty().withMessage("id is required")],
+  commentController.likeComment
+);
+
 module.exports = router;

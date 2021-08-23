@@ -53,6 +53,28 @@ const createComment = async (req, res, next) => {
   }
 };
 
+const likeComment = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty) {
+    const error = new Error("Like cannot be saved");
+    error.statusCode = 500;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  const id = req.body.id;
+
+  await Comment.findByIdAndUpdate({ id }, { $inc: { like_count: +1 } }, function(err, comment) {
+    if (err) {
+      return next(err);
+    }
+
+    res.status(200).json({message: "Like have been saved."});
+  });
+};
+
 module.exports = {
   createComment,
+  likeComment,
 };
