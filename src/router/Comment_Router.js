@@ -14,7 +14,7 @@ router.post(
 
 router.post(
   "/like-comment",
-  [body("/id").trim().notEmpty().withMessage("id is required")],
+  [body("id").trim().notEmpty().withMessage("id is required")],
   commentController.likeComment
 );
 

@@ -65,13 +65,21 @@ const likeComment = async (req, res, next) => {
 
   const id = req.body.id;
 
-  await Comment.findByIdAndUpdate({ id }, { $inc: { like_count: +1 } }, function(err, comment) {
-    if (err) {
-      return next(err);
-    }
+  try {
+    Comment.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { like_count: 1 } },
+      function (err, comment) {
+        if (err) {
+          return next(err);
+        }
 
-    res.status(200).json({message: "Like have been saved."});
-  });
+        res.status(200).json({ message: "Like have been saved." });
+      }
+    );
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {

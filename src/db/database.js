@@ -7,6 +7,7 @@ const connect = (callback) => {
       useCreateIndex: true,
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      useFindAndModify: false,
     })
     .then((_) => callback())
     .catch((error) => console.log(error));
