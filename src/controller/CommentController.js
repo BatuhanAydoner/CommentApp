@@ -64,11 +64,13 @@ const likeComment = async (req, res, next) => {
   }
 
   const id = req.body.id;
+  const backLike = req.body.backLike;
+  const likeCount = backLike ? -1 : 1;
 
   try {
     Comment.findByIdAndUpdate(
       { _id: id },
-      { $inc: { like_count: 1 } },
+      { $inc: { like_count: likeCount } },
       function (err, comment) {
         if (err) {
           return next(err);
@@ -82,7 +84,58 @@ const likeComment = async (req, res, next) => {
   }
 };
 
+const unlikeComment = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty) {
+    const error = new Error("Like cannot be saved");
+    error.statusCode = 500;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  const id = req.body.id;
+  const backUnlike = req.body.backUnlike;
+  const unlikeCount = backUnlike ? -1 : 1;
+
+  try {
+    Comment.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { like_count: unlikeCount } },
+      function (err, comment) {
+        if (err) {
+          return next(err);
+        }
+
+        res.status(200).json({ message: "Unlike have been saved." });
+      }
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteComment = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty) {
+    const error = new Error("Comment could not delete.");
+    error.statusCode = 500;
+    error.data = errors.array();
+    return next(error);
+  }
+  const comment_id = req.body.id;
+
+  Comment.findByIdAndDelete({ _id: comment_id }, function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.status(200).json({ message: "Comment was deleted successfully." });
+  });
+};
+
 module.exports = {
   createComment,
   likeComment,
+  unlikeComment,
+  deleteComment,
 };

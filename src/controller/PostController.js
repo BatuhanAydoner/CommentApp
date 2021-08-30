@@ -1,5 +1,6 @@
 const Post = require("../model/Post");
 const User = require("../model/User");
+const Comment = require("../model/Comment");
 const { validationResult } = require("express-validator");
 
 const createPost = async (req, res, next) => {
@@ -38,6 +39,36 @@ const createPost = async (req, res, next) => {
   }
 };
 
+const deletePost = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error("Post could not delete.");
+    error.statusCode = 500;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  const postID = req.body.id;
+
+  try {
+    Post.findByIdAndDelete({ _id: postID }, function (err, post) {
+      if (err) {
+        return next(err);
+      }
+      Comment.deleteMany({ _id: { $in: [...post.comments] } }, function (err) {
+        if (err) {
+          return next(err);
+        }
+        res.status(200).json({ message: "Post is deleted." });
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createPost,
+  deletePost,
 };

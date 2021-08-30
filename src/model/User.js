@@ -37,15 +37,6 @@ const UserSchema = new Schema(
     posts: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Posts" }],
     },
-    comments: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          required: [true, "Comment id is required."],
-          ref: "Comments",
-        },
-      ],
-    },
     saved: {
       type: [
         {

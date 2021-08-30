@@ -1,7 +1,10 @@
 const User = require("../model/User");
+const Post = require("../model/Post");
+const Comment = require("../model/Comment");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const ObjectId = require("mongodb").ObjectId;
 
 const signUp = async (req, res, next) => {
   const errors = validationResult(req);
@@ -89,7 +92,69 @@ const signIn = async (req, res, next) => {
   }
 };
 
+const getPosts = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error("Posts cannot get.");
+    error.statusCode = 500;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  const user_id = req.body.id;
+
+  Post.find({ creator: user_id }, function (err, posts) {
+    if (err) {
+      return next(err);
+    }
+    return res.status(200).json({ posts: [...posts] });
+  });
+};
+
+const getComments = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error("Posts cannot get.");
+    error.statusCode = 500;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  const user_id = req.body.id;
+
+  Comment.aggregate(
+    [
+      { $match: { creator: ObjectId(user_id) } },
+      {
+        $lookup: {
+          from: "Users",
+          localField: "creator",
+          foreignField: "_id",
+          as: "creator",
+        },
+      },
+    ],
+    function (err, comments) {
+      if (err) {
+        return next(err);
+      }
+      return res.status(200).json({ comments: [...comments] });
+    }
+  );
+
+  /* Comment.find({ creator: user_id }, function (err, comments) {
+    if (err) {
+      return next(err);
+    }
+    return res.status(200).json({ comments: [...comments] });
+  }); */
+};
+
 module.exports = {
   signUp,
   signIn,
+  getPosts,
+  getComments,
 };

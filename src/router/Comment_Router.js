@@ -18,4 +18,21 @@ router.post(
   commentController.likeComment
 );
 
+router.post(
+  "/unlike-comment",
+  [body("id").trim().notEmpty().withMessage("id is required")],
+  commentController.unlikeComment
+);
+
+router.delete(
+  "delete-comment",
+  [
+    body("id")
+      .trim()
+      .notEmpty()
+      .withMessage("id is required to delete comment."),
+  ],
+  commentController.deleteComment
+);
+
 module.exports = router;

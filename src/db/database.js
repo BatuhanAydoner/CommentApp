@@ -3,7 +3,7 @@ const env = require("dotenv");
 
 const connect = (callback) => {
   mongoose
-    .connect(process.env.PATH_MONGODB, {
+    .connect(process.env.PATH_LOCAL, {
       useCreateIndex: true,
       useUnifiedTopology: true,
       useNewUrlParser: true,

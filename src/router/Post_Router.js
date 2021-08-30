@@ -11,4 +11,10 @@ router.post(
   postController.createPost
 );
 
+router.delete(
+  "/delete-post",
+  [body("id").trim().notEmpty().withMessage("id is required to delete post")],
+  postController.deletePost
+);
+
 module.exports = router;

@@ -37,4 +37,26 @@ router.post(
 
 router.post("/login", userController.signIn);
 
+router.get(
+  "/posts",
+  [
+    body("id")
+      .trim()
+      .notEmpty()
+      .withMessage("id is required to get user's posts."),
+  ],
+  userController.getPosts
+);
+
+router.get(
+  "/comments",
+  [
+    body("id")
+      .trim()
+      .notEmpty()
+      .withMessage("id is required to get user's comments."),
+  ],
+  userController.getComments
+);
+
 module.exports = router;
